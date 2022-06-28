@@ -5,6 +5,7 @@ import {
   Heading,
   Input,
   Link,
+  Select,
   Text,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
@@ -13,7 +14,7 @@ import { useContract, useEVM } from "react-ethers"
 import { useUserName } from "../hooks/useUserName"
 import ContractButton from "./ContractButton"
 
-const Shop = ({ contract, userColor, erc20, erc20Info, cards }) => {
+const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
   const { network } = useEVM()
   const shop = useContract(contract.address, contract.abi)
   const { userName, surname: _surname } = useUserName()
@@ -144,25 +145,35 @@ const Shop = ({ contract, userColor, erc20, erc20Info, cards }) => {
             Achetez un booster de cartes, le booster doit être ensuite échanger
             pour recevoir les cartes
           </Text>
-          <Flex my="5" alignItems="center">
-            <Text me="5">Vous avez X booster(s)</Text>
-            <ContractButton contractFunc={() => shop.buyBooster()}>
-              Get your booster
-            </ContractButton>
+          <Flex my="5" flexDirection="column">
+            <Flex alignItems="center">
+              <Text me="5">Acheter un booster (coût : 8 FT)</Text>
+              <ContractButton contractFunc={() => shop.buyBooster()}>
+                Get a booster
+              </ContractButton>
+            </Flex>
+            <Text color="gray" me="5">
+              Vous avez {inventory.boosters.amount.length} booster(s)
+            </Text>
           </Flex>
           <Flex my="5" alignItems="center">
             <FormLabel d="flex" flexDirection="column" me="20">
               Entrez le numéro de votre booster
-              <Input
-                maxW="10rem"
+              <Select
+                placeholder="Sélectionnez l'ID du booster"
+                bg="white"
                 onChange={(e) => {
                   setBooster(e.target.value)
                 }}
-                bg="white"
-                type="text"
-                value={booster}
-                placeholder="Entrer l'ID du booster"
-              />
+              >
+                {inventory.boosters.amount.map((booster) => {
+                  return (
+                    <option key={booster} value={booster}>
+                      {booster}
+                    </option>
+                  )
+                })}
+              </Select>
             </FormLabel>
             <ContractButton contractFunc={() => shop.openBooster(booster)}>
               Open your booster the #{booster} booster

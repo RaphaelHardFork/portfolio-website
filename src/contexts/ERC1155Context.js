@@ -1,3 +1,4 @@
+import { ethers } from "ethers"
 import { createContext, useEffect, useState } from "react"
 import { useContract, useEVM } from "react-ethers"
 import contracts from "./contracts.json"
@@ -23,43 +24,83 @@ const createInventory = async (entrySingle, entryBatch, cards) => {
   return entrylist
 }
 
-const ERC1155Provider = ({ children }) => {
-  const { ropsten } = contracts
-  const cards = useContract(ropsten.Cards.address, ropsten.Cards.abi)
+const ERC1155Provider = ({ children, contract }) => {
+  const cards = useContract(contract.address, contract.abi)
   const { account } = useEVM()
-
-  const [userInfo, setUserInfo] = useState({
-    booster: 0,
-    cards: [{ id: 0, amount: 0 }],
+  const [inventory, setInventory] = useState({
+    boosters: { amount: [], opened: [] },
+    cards: [],
   })
 
   useEffect(() => {
     const main = async () => {
-      // check received => exited
-      if (cards && account.address) {
-        // boosters
-        const boosterEnters = await cards.queryFilter(
-          cards.filters.TransferSingle(null, null, account.address)
-        )
+      // get events
+      const singleEntry = await cards.queryFilter(
+        cards.filters.TransferSingle(null, null, account.address)
+      )
+      const batchEntry = await cards.queryFilter(
+        cards.filters.TransferBatch(null, null, account.address)
+      )
+      const singleExit = await cards.queryFilter(
+        cards.filters.TransferSingle(null, account.address, null)
+      )
+      const batchExit = await cards.queryFilter(
+        cards.filters.TransferBatch(null, account.address, null)
+      )
 
-        // cards
-        const enters = await cards.queryFilter(
-          cards.filters.TransferBatch(
-            null,
-            null,
-            "0x2dD7A091e6F9759FB38E272E71a55a8c123258Bd"
-          )
-        )
+      // get all id entries
+      const ids = []
 
-        await createInventory(boosterEnters, enters, cards)
-        setUserInfo()
+      for (const entry of singleEntry) {
+        ids.push(entry.args.id.toNumber())
       }
+      for (const entry of batchEntry) {
+        for (const id of entry.args.ids) {
+          ids.push(id.toNumber())
+        }
+      }
+
+      // get full inventory
+      let inventory = { boosters: { amount: [], opened: [] }, cards: [] }
+
+      for (const id of ids) {
+        if (id > 10000) {
+          inventory.boosters.amount.push(id)
+        } else {
+          const index = inventory.cards.findIndex((card) => card.id === id)
+          if (index !== -1) {
+            inventory.cards[index].amount++
+          } else {
+            inventory.cards.push({ id, amount: 1 })
+          }
+        }
+      }
+      // sort and filter
+      const exitIds = []
+      for (const exit of singleExit) {
+        if (exit.args.id > 10000) {
+          if (exit.args.to === ethers.constants.AddressZero) {
+            inventory.boosters.opened.push(exit.args.id.toNumber())
+          }
+          inventory.boosters.amount = inventory.boosters.amount.filter(
+            (id) => id !== exit.args.id.toNumber()
+          )
+        } else {
+          exitIds.push(exit.args.id)
+        }
+      }
+      console.log(inventory)
+
+      // store
+      setInventory(inventory) // check that!
     }
-    main()
+    if (cards) {
+      main()
+    }
   }, [cards, account.address])
 
   return (
-    <ERC1155Context.Provider value={{ cards, userInfo }}>
+    <ERC1155Context.Provider value={{ cards, inventory }}>
       {children}
     </ERC1155Context.Provider>
   )

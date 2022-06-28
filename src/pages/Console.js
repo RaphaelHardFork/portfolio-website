@@ -30,7 +30,9 @@ const Console = () => {
       <UserNameProvider
         contract={selectContract(contracts, network.chainId, "UserName")}
       >
-        <ERC1155Provider>
+        <ERC1155Provider
+          contract={selectContract(contracts, network.chainId, "Cards")}
+        >
           <ERC721Provider
             contract={selectContract(
               contracts,
