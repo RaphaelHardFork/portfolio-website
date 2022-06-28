@@ -22,6 +22,8 @@ const UserNameProvider = ({ children, contract }) => {
       }
     }
     main()
+
+    return () => setSurname("")
   }, [userName, account.address, account.isLogged])
 
   return (

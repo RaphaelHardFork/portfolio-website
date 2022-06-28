@@ -28,6 +28,8 @@ const ERC721 = ({ contract, userInfo }) => {
       }
     }
     main()
+
+    return () => setTotalSupply(0)
   }, [contract])
 
   return (

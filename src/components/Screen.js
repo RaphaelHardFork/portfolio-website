@@ -50,7 +50,8 @@ const Screen = () => {
         </>
       ) : (
         <>
-          {network.name !== "Ethereum Rinkeby testnet" ? (
+          {network.name !== "Ethereum Rinkeby testnet" &&
+          network.name !== "Ethereum Ropsten testnet" ? (
             <>
               <Heading fontFamily="mono" my="10" textAlign="center">
                 Vous êtes connecté sur {network.name}

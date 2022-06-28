@@ -104,7 +104,11 @@ const ERC1155 = ({ contract, inventory }) => {
     }
 
     main()
-    indexToValue()
+    return () =>
+      setDistribution({
+        remainingBooster: 1998,
+        cards: [],
+      })
   }, [contract])
 
   return (
