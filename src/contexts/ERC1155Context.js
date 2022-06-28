@@ -1,28 +1,8 @@
 import { ethers } from "ethers"
 import { createContext, useEffect, useState } from "react"
 import { useContract, useEVM } from "react-ethers"
-import contracts from "./contracts.json"
 
 export const ERC1155Context = createContext(null)
-
-const createInventory = async (entrySingle, entryBatch, cards) => {
-  // const inventory = { booster: 0, cards: [] }
-
-  // all entries
-  const entrylist = []
-  for (const entry of entrySingle) {
-    entrylist.push(entry.args.id.toNumber())
-  }
-  for (const entry of entryBatch) {
-    for (const id of entry.args.ids) {
-      entrylist.push(id.toNumber())
-    }
-  }
-
-  // const balances = await cards.balanceOfBatch(entrylist)
-
-  return entrylist
-}
 
 const ERC1155Provider = ({ children, contract }) => {
   const cards = useContract(contract.address, contract.abi)
@@ -75,7 +55,7 @@ const ERC1155Provider = ({ children, contract }) => {
           }
         }
       }
-      // sort and filter
+      // sort and filter opened booster
       const exitIds = []
       for (const exit of singleExit) {
         if (exit.args.id > 10000) {
@@ -86,10 +66,31 @@ const ERC1155Provider = ({ children, contract }) => {
             (id) => id !== exit.args.id.toNumber()
           )
         } else {
-          exitIds.push(exit.args.id)
+          exitIds.push(exit.args.id.toNumber())
         }
       }
-      console.log(inventory)
+      for (const exit of batchExit) {
+        for (const id of exit.args.ids) {
+          exitIds.push(id.toNumber())
+        }
+      }
+
+      for (const id of exitIds) {
+        if (id > 10000) {
+          inventory.boosters.amount = inventory.boosters.amount.filter(
+            (elem) => elem !== id
+          )
+        } else {
+          const index = inventory.cards.findIndex((elem) => elem.id === id)
+          if (index !== -1) {
+            if (inventory.cards[index].amount === 1) {
+              inventory.cards = inventory.cards.filter((card) => card.id !== id)
+            } else {
+              inventory.cards[index].amount--
+            }
+          }
+        }
+      }
 
       // store
       setInventory(inventory) // check that!

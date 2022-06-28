@@ -1,7 +1,21 @@
-import { Box, Flex, Heading, Link, Spacer, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Link,
+  Spacer,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { useState } from "react"
 import { useEffect } from "react"
 import { useEVM } from "react-ethers"
+import ContractButton from "./ContractButton"
 
 function findSymbol(index) {
   if (index >= 53) {
@@ -45,12 +59,32 @@ function indexToValue(index) {
   return card
 }
 
+function convertTable(transferList) {
+  const output = { ids: [], amounts: [] }
+
+  for (const item of transferList) {
+    const index = output.ids.findIndex((i) => i === item)
+    if (index !== -1) {
+      output.amounts[index]++
+    } else {
+      output.ids.push(item)
+      output.amounts.push(1)
+    }
+  }
+
+  return output
+}
+
 const ERC1155 = ({ contract, inventory }) => {
-  const { network } = useEVM()
+  const { network, account } = useEVM()
   const [distribution, setDistribution] = useState({
     remainingBooster: 1998,
     cards: [],
   })
+
+  const [toTransfer, setToTransfer] = useState([])
+  const [inTransfer, setInTransfer] = useState(false)
+  const [receiver, setReceiver] = useState("")
 
   useEffect(() => {
     const main = async () => {
@@ -60,8 +94,6 @@ const ERC1155 = ({ contract, inventory }) => {
         const cardsRequest = []
         for (let i = 1; i <= 108; i++) {
           cardsRequest.push(contract.totalSupply(i))
-          // const supply = await contract.totalSupply(i)
-          // cards.push(supply.toNumber())
         }
         const cards = (await Promise.all(cardsRequest)).map((supply) =>
           supply.toNumber()
@@ -114,20 +146,238 @@ const ERC1155 = ({ contract, inventory }) => {
             <Flex justifyContent="space-between" my="5" flexWrap="wrap" gap="5">
               {distribution.cards.map((card, index) => {
                 return (
-                  <Box
-                    shadow="md"
-                    borderRadius="5"
-                    p="3"
-                    color={indexToValue(index).color}
-                    bg={card ? "white" : "white.400"}
+                  <Tooltip
                     key={index}
+                    label={`${card}/${index < 55 ? "180" : "5"}`}
+                    bg={
+                      card
+                        ? "amber.900"
+                        : index < 55
+                        ? card === 180
+                          ? "duck.500"
+                          : ""
+                        : card === 5
+                        ? "duck.500"
+                        : ""
+                    }
                   >
-                    {indexToValue(index).text}
-                  </Box>
+                    <Box
+                      shadow="md"
+                      borderRadius="5"
+                      cursor="default"
+                      p="3"
+                      color={indexToValue(index).color}
+                      bg={card ? "white" : "white.400"}
+                    >
+                      {indexToValue(index).text}
+                    </Box>
+                  </Tooltip>
                 )
               })}
               <Spacer />
             </Flex>
+          </>
+        )}
+
+        {/* INVENTORY */}
+        <Heading fontFamily="mono" mt="5">
+          Inventaire :
+        </Heading>
+        {/* CARDS */}
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          my="5"
+          flexWrap="wrap"
+          gap="5"
+        >
+          <Heading fontFamily="mono" fontSize="2xl">
+            Cartes :
+          </Heading>
+          {inventory.cards.map((card) => {
+            return (
+              <Tooltip label={card.amount} key={card.id}>
+                <Box
+                  cursor={
+                    inTransfer
+                      ? toTransfer.filter((elem) => elem === card.id).length >=
+                        card.amount
+                        ? "no-drop"
+                        : "pointer"
+                      : "default"
+                  }
+                  bg={
+                    toTransfer.filter((elem) => elem === card.id).length >=
+                    card.amount
+                      ? "gray.400"
+                      : "white"
+                  }
+                  shadow="md"
+                  borderRadius="5"
+                  onClick={() => {
+                    setToTransfer((t) => {
+                      if (!inTransfer) return t
+                      if (
+                        toTransfer.filter((elem) => elem === card.id).length >=
+                        card.amount
+                      )
+                        return t
+                      return [...t, card.id]
+                    })
+                  }}
+                  p="3"
+                  color={indexToValue(card.id - 1).color}
+                >
+                  {indexToValue(card.id - 1).text}
+                </Box>
+              </Tooltip>
+            )
+          })}
+          <Spacer />
+        </Flex>
+
+        {/* BOOSTER */}
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          my="5"
+          flexWrap="wrap"
+          gap="5"
+        >
+          <Heading fontFamily="mono" fontSize="2xl">
+            Boosters :
+          </Heading>
+          {inventory.boosters.amount.map((booster) => {
+            return (
+              <Tooltip key={booster} label={booster}>
+                <Box
+                  cursor={
+                    inTransfer
+                      ? toTransfer.filter((elem) => elem === booster).length >=
+                        1
+                        ? "no-drop"
+                        : "pointer"
+                      : "default"
+                  }
+                  minH="3rem"
+                  minW="2.5rem"
+                  shadow="md"
+                  onClick={() => {
+                    setToTransfer((t) => {
+                      if (!inTransfer) return t
+                      if (
+                        toTransfer.filter((elem) => elem === booster).length >=
+                        1
+                      )
+                        return t
+                      return [...t, booster]
+                    })
+                  }}
+                  borderRadius="5"
+                  p="3"
+                  bg="duck.500"
+                ></Box>
+              </Tooltip>
+            )
+          })}
+          {inventory.boosters.opened.map((opened) => {
+            return (
+              <Tooltip label={opened} key={opened}>
+                <Box
+                  minH="3rem"
+                  minW="2.5rem"
+                  shadow="md"
+                  opacity="0.4"
+                  bg="duck.50"
+                  borderRadius="5"
+                  p="3"
+                ></Box>
+              </Tooltip>
+            )
+          })}
+          <Spacer />
+        </Flex>
+
+        {/* TRANSFER */}
+        <Button
+          mt="10"
+          onClick={() =>
+            setInTransfer((a) => {
+              setToTransfer([])
+              return !a
+            })
+          }
+          colorScheme={inTransfer ? "corail" : "duck"}
+        >
+          {inTransfer ? "Annuler le transfer" : "Transférer des cartes"}
+        </Button>
+        {!inTransfer ? (
+          ""
+        ) : (
+          <>
+            <Flex
+              alignItems="center"
+              justifyContent="space-between"
+              my="5"
+              flexWrap="wrap"
+              gap="5"
+            >
+              <Heading fontFamily="mono" fontSize="2xl" mt="5">
+                A transférer :
+              </Heading>
+              {toTransfer.map((item, index) => {
+                return (
+                  <Tooltip key={index}>
+                    <Box
+                      cursor="pointer"
+                      minH="3rem"
+                      minW="2.5rem"
+                      shadow="md"
+                      borderRadius="5"
+                      onClick={() =>
+                        setToTransfer((p) => p.filter((elem) => elem !== item))
+                      }
+                      p="3"
+                      color={indexToValue(item - 1).color}
+                      bg={item > 10000 ? "duck.500" : "white"}
+                    >
+                      {item > 10000 ? "" : indexToValue(item - 1).text}
+                    </Box>
+                  </Tooltip>
+                )
+              })}
+              <Spacer />
+            </Flex>
+          </>
+        )}
+
+        {/* INPUT FOR TRANSFER */}
+        {!inTransfer ? (
+          ""
+        ) : (
+          <>
+            <FormControl my="5">
+              <FormLabel>Adresse de réception :</FormLabel>
+              <Input
+                onChange={(e) => setReceiver(e.target.value)}
+                bg="white"
+                placeholder="0x0000..."
+              />
+            </FormControl>
+            <ContractButton
+              contractFunc={() =>
+                contract.safeBatchTransferFrom(
+                  account.address,
+                  receiver,
+                  convertTable(toTransfer).ids,
+                  convertTable(toTransfer).amounts,
+                  ethers.utils.id("")
+                )
+              }
+              isDisabled={receiver.length !== 42 || toTransfer.length === 0}
+            >
+              Transférer
+            </ContractButton>
           </>
         )}
       </Flex>
