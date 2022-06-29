@@ -20,6 +20,8 @@ function networkName(name) {
       return "pink.200"
     case "Ethereum Rinkeby testnet":
       return "amber.200"
+    case "Polygon mainnet":
+      return "purple.200"
     default:
       return "gray.200"
   }

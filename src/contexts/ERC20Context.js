@@ -4,7 +4,7 @@ import { useContract, useEVM } from "react-ethers"
 
 export const ERC20Context = createContext(null)
 
-const ERC20Provider = ({ children, contract, shopAddr }) => {
+const ERC20Provider = ({ children, contract, shopAddr,goodNetwork }) => {
   const { account } = useEVM()
   const token = useContract(contract.address, contract.abi)
 
@@ -12,7 +12,7 @@ const ERC20Provider = ({ children, contract, shopAddr }) => {
 
   useEffect(() => {
     const main = async () => {
-      if (token && account.isLogged) {
+      if (token && account.isLogged && goodNetwork) {
         try {
           const rawBalance = await token.balanceOf(account.address)
           const shopAllowance = await token.allowance(account.address, shopAddr)
@@ -28,7 +28,7 @@ const ERC20Provider = ({ children, contract, shopAddr }) => {
       }
     }
     main()
-  }, [token, account.address, account.isLogged, shopAddr])
+  }, [token, account.address, account.isLogged, shopAddr,goodNetwork])
 
   return (
     <ERC20Context.Provider value={{ token, userInfo }}>

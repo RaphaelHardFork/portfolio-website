@@ -26,8 +26,12 @@ const NetworkSwitch = () => {
         <option disabled={network.chainId === 3} value="3">
           Ropsten
         </option>
-        <option value="1">Aurora</option>
-        <option value="1">Polygon</option>
+        <option disabled={true} value="1">
+          Aurora
+        </option>
+        <option disabled={network.chainId === 137} value="89">
+          Polygon
+        </option>
       </Select>
       <Button
         onClick={() => methods.switchNetwork(destination)}

@@ -3,7 +3,7 @@ import { useContract, useEVM } from "react-ethers"
 
 export const ERC721Context = createContext(null)
 
-const ERC721Provider = ({ children, contract }) => {
+const ERC721Provider = ({ children, contract, goodNetwork }) => {
   const token = useContract(contract.address, contract.abi)
   const { account } = useEVM()
   const [userColor, setUserColor] = useState({
@@ -30,7 +30,7 @@ const ERC721Provider = ({ children, contract }) => {
         setUserColor({ haveColor: false, color: "#000000" })
       }
     }
-    if (account.address && token) {
+    if (account.address && token && goodNetwork) {
       try {
         main()
       } catch (e) {
@@ -39,7 +39,7 @@ const ERC721Provider = ({ children, contract }) => {
         console.log(e)
       }
     }
-  }, [account.address, token])
+  }, [account.address, token, goodNetwork])
 
   return (
     <ERC721Context.Provider value={{ token, userColor }}>

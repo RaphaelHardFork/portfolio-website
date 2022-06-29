@@ -22,6 +22,19 @@ export function selectContract(contracts, chainId, contractName) {
   }
 }
 
+function isGoodNetwork(networkName) {
+  switch (networkName) {
+    case "Ethereum Ropsten testnet":
+      return true
+    case "Ethereum Rinkeby testnet":
+      return true
+    case "Polygon mainnet":
+      return false
+    default:
+      return false
+  }
+}
+
 const Console = () => {
   const { network } = useEVM()
 
@@ -29,9 +42,11 @@ const Console = () => {
     <>
       <UserNameProvider
         contract={selectContract(contracts, network.chainId, "UserName")}
+        goodNetwork={isGoodNetwork(network.name)}
       >
         <ERC1155Provider
           contract={selectContract(contracts, network.chainId, "Cards")}
+          goodNetwork={isGoodNetwork(network.name)}
         >
           <ERC721Provider
             contract={selectContract(
@@ -39,6 +54,7 @@ const Console = () => {
               network.chainId,
               "ColoredToken"
             )}
+            goodNetwork={isGoodNetwork(network.name)}
           >
             <ERC20Provider
               contract={selectContract(
@@ -46,6 +62,7 @@ const Console = () => {
                 network.chainId,
                 "FungibleToken"
               )}
+              goodNetwork={isGoodNetwork(network.name)}
               shopAddr={
                 selectContract(contracts, network.chainId, "Shop").address
               }

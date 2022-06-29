@@ -4,7 +4,7 @@ import { useContract, useEVM } from "react-ethers"
 
 export const ERC1155Context = createContext(null)
 
-const ERC1155Provider = ({ children, contract }) => {
+const ERC1155Provider = ({ children, contract,goodNetwork }) => {
   const cards = useContract(contract.address, contract.abi)
   const { account } = useEVM()
   const [inventory, setInventory] = useState({
@@ -95,10 +95,10 @@ const ERC1155Provider = ({ children, contract }) => {
       // store
       setInventory(inventory) // check that!
     }
-    if (cards) {
+    if (cards && goodNetwork) {
       main()
     }
-  }, [cards, account.address])
+  }, [cards, account.address,goodNetwork])
 
   return (
     <ERC1155Context.Provider value={{ cards, inventory }}>
