@@ -48,7 +48,7 @@ const Menu = () => {
           mx="auto"
           _hover={{ bg: "corail.500", color: "white" }}
         >
-          Quitter la console
+          Quit console
         </Box>
       </Link>
     </Box>

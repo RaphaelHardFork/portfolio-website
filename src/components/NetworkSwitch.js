@@ -9,7 +9,7 @@ const NetworkSwitch = () => {
   return (
     <Box p="10">
       <Text mb="4" fontSize="2xl" fontFamily="mono">
-        Changer de réseau
+        Change network
       </Text>
       <Select
         my="4"
@@ -17,7 +17,7 @@ const NetworkSwitch = () => {
         maxW="25%"
         colorScheme="duck"
         fontSize="xl"
-        placeholder="Choisissez un réseau"
+        placeholder="Choose a network"
         onChange={(e) => setDestination(e.target.value)}
       >
         <option disabled={network.chainId === 4} value="4">
@@ -33,7 +33,7 @@ const NetworkSwitch = () => {
         onClick={() => methods.switchNetwork(destination)}
         colorScheme="duck"
       >
-        Changer de network
+        Change network
       </Button>
     </Box>
   )

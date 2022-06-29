@@ -1,12 +1,32 @@
-import { Badge, Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react"
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Spacer,
+  Text,
+} from "@chakra-ui/react"
+import { FaPowerOff } from "react-icons/fa"
 import { useState } from "react"
 import { useEVM } from "react-ethers"
 import { useERC20 } from "../hooks/useERC20"
 import { useERC721 } from "../hooks/useERC721"
 import { useUserName } from "../hooks/useUserName"
 
+function networkName(name) {
+  switch (name) {
+    case "Ethereum Ropsten testnet":
+      return "pink.200"
+    case "Ethereum Rinkeby testnet":
+      return "amber.200"
+    default:
+      return "gray.200"
+  }
+}
+
 const Launcher = () => {
-  const { methods, account, connectionType } = useEVM()
+  const { methods, account, connectionType, network } = useEVM()
   const { userColor } = useERC721()
   const { userInfo } = useERC20()
   const { surname } = useUserName()
@@ -23,13 +43,23 @@ const Launcher = () => {
             size="lg"
             colorScheme="duck"
             onClick={() => methods.launchConnection("injected")}
+            leftIcon={<FaPowerOff />}
           >
-            Démarrer la console
+            <Text ms="3">Start console</Text>
           </Button>
         ) : account.isLogged ? (
           <>
             <Spacer />
-            <Badge bg="ecru.800" fontSize="lg" borderRadius="10" p="4" me="4">
+            <Badge
+              bg={networkName(network.name)}
+              fontSize="lg"
+              borderRadius="10"
+              p="3"
+              me="4"
+            >
+              {network.name}
+            </Badge>
+            <Badge bg="ecru.800" fontSize="lg" borderRadius="10" p="3" me="4">
               {userInfo.balance} FT (credits)
             </Badge>
             <Button

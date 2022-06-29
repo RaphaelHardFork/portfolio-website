@@ -31,7 +31,7 @@ const ERC20 = ({ token, balance }) => {
   return (
     <>
       <Text>
-        Contract Info:
+        Contract Info:{" "}
         <Link href={`${network.explorerUrl + token.address}`} isExternal>
           {token.address}
         </Link>
@@ -46,17 +46,18 @@ const ERC20 = ({ token, balance }) => {
           Fungible Token (FT)
         </Heading>
         <Text textAlign="center">
-          Ceci est un jeton ERC20 (fongible) pouvant être "minter" à l'infini
-          (par tranche de 50).
+          This is an ERC20 token (fungible) that can be minted infinitely (in
+          increments of 50, or more if you pay at least 1$ worth of{" "}
+          {network.name === "Polygon" ? "MATIC" : "ETH"})
         </Text>
         <Text mb="20" textAlign="center">
-          Total supply : {totalSupply} FT
+          Total supply: {totalSupply} FT
         </Text>
         <Heading fontFamily="mono" my="5">
-          Votre solde : {balance} FT (Fungible Token)
+          Your balance: {balance} FT (Fungible Token)
         </Heading>
         <Heading fontFamily="mono" fontSize="2xl" mt="20" mb="5" as="h3">
-          Obtenez des jetons
+          Get tokens
         </Heading>
         <Flex alignItems="center">
           <ContractButton
@@ -66,10 +67,10 @@ const ERC20 = ({ token, balance }) => {
           </ContractButton>
           <FormLabel ms="5">
             <Text>
-              Entrée un montant{" "}
+              Enter an amount{" "}
               {amount > 50 ? (
                 <Text as="span" color="red.300">
-                  inférieur à 50
+                  lower than 50
                 </Text>
               ) : (
                 ""
@@ -87,20 +88,18 @@ const ERC20 = ({ token, balance }) => {
           </FormLabel>
         </Flex>
         {balance > 0 ? (
-          <Text>
-            Maintenant que vous avez des jetons allez faire un tour au Shop
-          </Text>
+          <Text>Now that you have tokens go to the Shop</Text>
         ) : (
           ""
         )}
 
         {/* MINT MORE */}
         <Heading fontFamily="mono" fontSize="2xl" mt="20" as="h3">
-          Obtenir plus de jetons
+          Get more tokens
         </Heading>
         <Text mb="5" fontSize="md">
-          Vous pouvez minter encore plus de jetons en envoyant de la valeur dans
-          le contract
+          You can mint even more tokens by sending some value to the contract as
+          donation (at least 1$ worth).
         </Text>
         <Flex alignItems="center">
           <ContractButton
@@ -114,10 +113,10 @@ const ERC20 = ({ token, balance }) => {
           </ContractButton>
           <FormLabel ms="5">
             <Text>
-              Entrée un montant{" "}
+              Enter an amount{" "}
               {amount > 1000 ? (
                 <Text as="span" color="red.300">
-                  entre 50 et 1000
+                  between 50 and 1000
                 </Text>
               ) : (
                 ""
@@ -134,7 +133,7 @@ const ERC20 = ({ token, balance }) => {
             />
           </FormLabel>
           <FormLabel ms="5">
-            <Text>Entrer une valeur</Text>
+            <Text>Value to send</Text>
             <Input
               step="0.005"
               min="0"
@@ -147,7 +146,10 @@ const ERC20 = ({ token, balance }) => {
             />
           </FormLabel>
           <Flex color="gray" ms="4" flexDirection="column">
-            <Text>ETH Price: {ethPrice} USD</Text>
+            <Text>
+              {network.name === "Polygon" ? "MATIC" : "ETH"} Price: {ethPrice}{" "}
+              USD
+            </Text>
             <Text>Value: {value * Number(ethPrice)} USD</Text>
           </Flex>
         </Flex>

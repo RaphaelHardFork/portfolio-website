@@ -35,7 +35,7 @@ const ERC721 = ({ contract, userInfo }) => {
   return (
     <>
       <Text>
-        Contract Info:
+        Contract Info:{" "}
         <Link href={`${network.explorerUrl + contract.address}`} isExternal>
           {contract.address}
         </Link>
@@ -51,37 +51,37 @@ const ERC721 = ({ contract, userInfo }) => {
           Colored Token (COLOR)
         </Heading>
         <Text mb="5" textAlign="center">
-          Ces jetons sont des ERC721 (NFT), il en existe 16 777 215 unité, ce
-          chiffre correspond au nombre de couleur existante (0xFFFFFF). Chaque
-          adresse (wallet) ne peut détenir qu'un seul de ces jetons. Vous devez
-          donc vous en séparer pour en avoir un nouveau.
+          These tokens are ERC721 (NFT), there are 16,777,215 units, this figure
+          corresponds to the existing color number (0xFFFFFF). Each address
+          (wallet) can only hold one of these tokens. So you have to part with
+          it to get a new one.
         </Text>
         <Text textAlign="center" fontWeight="bold" mb="20">
-          Nombre de jetons disponible : {16777215 - totalSupply} / 16777215
+          Available tokens: {16777215 - totalSupply} / 16777215
         </Text>
 
         <Heading fontFamily="mono" mb="5">
-          Votre token :
+          Your token:
         </Heading>
         {userInfo.haveColor ? (
           <Text fontSize="lg" fontWeight="bold" mb="20">
-            Votre couleur est le{" "}
+            Your color is the{" "}
             <Text as="span" color={userInfo.color}>
               {userInfo.color.toUpperCase()}
             </Text>
           </Text>
         ) : (
           <Text fontSize="lg" fontWeight="bold" mb="20">
-            Vous n'avez pas de couleur, achetez en une dans le magasin
+            You don't have any color, buy one in the shop.
           </Text>
         )}
 
         {/* BURN */}
         <Heading fontFamily="mono" mb="5">
-          Brûler votre couleur
+          Burn your color (minimum cost: 0.00005 ETH)
         </Heading>
         <FormControl mb="4">
-          <FormLabel>Montant associé (min 0.00005 ETH)</FormLabel>
+          <FormLabel>Value to send</FormLabel>
           <Flex>
             <Input
               onChange={(e) => setValue(e.target.value)}
@@ -108,10 +108,10 @@ const ERC721 = ({ contract, userInfo }) => {
 
         {/* TRANSFER */}
         <Heading fontFamily="monospace" mb="5">
-          Transférer votre couleur
+          Transfer your token
         </Heading>
         <FormControl mb="4">
-          <FormLabel>Adresse de reception</FormLabel>
+          <FormLabel>Destination address</FormLabel>
           <Flex>
             <Input
               onChange={(e) => setReceiver(e.target.value)}

@@ -15,13 +15,13 @@ const Dashboard = () => {
         p="10"
       >
         <Heading fontSize="6xl" fontFamily="console" mb="5" textAlign="center">
-          Tableau de bord
+          Dashboard
         </Heading>
         <Text mb="4" fontSize="2xl" fontFamily="mono">
           {network.name}
         </Text>
         <Text mb="6" fontSize="2xl" fontFamily="mono">
-          Compte:{" "}
+          Account:{" "}
           <Link href={`${network.explorerUrl + account.address}`} isExternal>
             {account.address}
           </Link>

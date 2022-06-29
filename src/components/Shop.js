@@ -30,21 +30,19 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
       <Flex alignItems="center" justifyContent="space-between">
         <Box>
           <Text>
-            Contract Info:
+            Contract Info:{" "}
             <Link href={`${network.explorerUrl + shop.address}`} isExternal>
               {shop.address}
             </Link>
           </Text>
-          <Text>
-            Le magasin peut utiliser {erc20Info.shopAllowance} de vos FT
-          </Text>
+          <Text>The shop can spend {erc20Info.shopAllowance} of your FT.</Text>
         </Box>
         <ContractButton
           contractFunc={() =>
             erc20.approve(shop.address, ethers.utils.parseEther("50"))
           }
         >
-          Authorisez le magasin pour 50 FT
+          Allow shop to spend for 50 FT
         </ContractButton>
       </Flex>
 
@@ -56,23 +54,24 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
         textAlign="center"
       >
         <Heading fontSize="6xl" fontFamily="console">
-          Bienvenue au magasin
+          Welcome to the shop
         </Heading>
-        <Text>Vous pouvez acheter plusieurs tokens</Text>
+        <Text>You can buy several type of tokens</Text>
 
         {/* COULEUR */}
         <Flex textAlign="start" flexDirection="column" mt="10">
           <Text>
-            Offrez-vous une couleur unique parmi les 16 777 215 de couleur
-            disponible ! Emet un ERC721 (NFT), vous ne pouvez en posseder qu'un
-            seul par wallet. Transferez-le si vous en voulez une autre.
+            Choose and mint your unique color among the 16,777,215 colors
+            available ! Issues an ERC721 (NFT), you can own only one by wallet.
+            Transfer it if you want another one or you can burn it by donate
+            some value to the contract.
           </Text>
           <Flex alignItems="center" my="5">
             <FormLabel me="20">
               {userColor.haveColor ? (
-                <Text color="red.400">Vous avez déjà une couleur</Text>
+                <Text color="red.400">You already have a color.</Text>
               ) : (
-                <Text>Choisissez une couleur (cout : 12 FT)</Text>
+                <Text>Choose a color (cost: 12 FT)</Text>
               )}
               <Input
                 disabled={userColor.haveColor}
@@ -88,7 +87,7 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
               contractFunc={() => shop.buyColor(color.replace("#", "0x"))}
               isDisabled={userColor.haveColor}
             >
-              Minter le {color}
+              Mint the {color}
             </ContractButton>
           </Flex>
         </Flex>
@@ -96,14 +95,15 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
         {/* NAMES */}
         <Flex textAlign="start" flexDirection="column" mt="10">
           <Text>
-            Changer votre nom sur la console (ce contrat n'emet aucun jeton).
+            Change your name an the console (this contract do not issue any
+            tokens).
           </Text>
           <Flex alignItems="center" my="5">
             <FormLabel me="20">
               {!surname ? (
-                <Text>Entrer un nom (cout : 4 FT)</Text>
+                <Text>Enter a name (cost: 4 FT)</Text>
               ) : (
-                <Text>Changer de nom (cout : 4 FT)</Text>
+                <Text>Change your name (cost: 4 FT)</Text>
               )}
 
               <Input
@@ -127,7 +127,7 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
                 !surname || available !== ethers.constants.AddressZero
               }
             >
-              Enregistrer "{surname}"
+              Save "{surname}"
             </ContractButton>
             <Text ms="5">
               {!surname
@@ -142,26 +142,32 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
         {/* CARDS */}
         <Flex textAlign="start" flexDirection="column" mt="10">
           <Text>
-            Achetez un booster de cartes, le booster doit être ensuite échanger
-            pour recevoir les cartes
+            Buy a card booster, these boosters contain 5 cards, some of which
+            are rare. The booster must be burned by the shop to redeem your
+            cards.
           </Text>
           <Flex my="5" flexDirection="column">
             <Flex alignItems="center">
-              <Text me="5">Acheter un booster (coût : 8 FT)</Text>
+              <Text me="5">Buy a booster (cost: 8 FT)</Text>
               <ContractButton contractFunc={() => shop.buyBooster()}>
-                Get a booster
+                Grab a booster
               </ContractButton>
             </Flex>
             <Text color="gray" me="5">
-              Vous avez {inventory.boosters.amount.length} booster(s)
+              You have {inventory.boosters.amount.length} booster(s)
             </Text>
           </Flex>
           <Flex my="5" alignItems="center">
             <FormLabel d="flex" flexDirection="column" me="20">
-              Entrez le numéro de votre booster
+              Enter the number of your booster to open.
               <Select
-                placeholder="Sélectionnez l'ID du booster"
+                placeholder={
+                  !inventory.boosters.amount.length
+                    ? "No booster to open"
+                    : "Select booster ID"
+                }
                 bg="white"
+                disabled={!inventory.boosters.amount.length}
                 onChange={(e) => {
                   setBooster(e.target.value)
                 }}
@@ -175,15 +181,18 @@ const Shop = ({ contract, userColor, erc20, erc20Info, inventory }) => {
                 })}
               </Select>
             </FormLabel>
-            <ContractButton contractFunc={() => shop.openBooster(booster)}>
-              Open your booster the #{booster} booster
+            <ContractButton
+              isDisabled={!inventory.boosters.amount.length}
+              contractFunc={() => shop.openBooster(booster)}
+            >
+              Open the #{booster} booster
             </ContractButton>
           </Flex>
         </Flex>
       </Flex>
     </>
   ) : (
-    "Loading"
+    "Loading..."
   )
 }
 export default Shop

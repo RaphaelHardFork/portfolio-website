@@ -115,7 +115,7 @@ const ERC1155 = ({ contract, inventory }) => {
     <>
       {/* CONTRACT INFO */}
       <Text>
-        Contract Info:
+        Contract Info:{" "}
         <Link href={`${network.explorerUrl + contract.address}`} isExternal>
           {contract.address}
         </Link>
@@ -132,20 +132,20 @@ const ERC1155 = ({ contract, inventory }) => {
           Useless Playing cards (CARDS)
         </Heading>
         <Text mb="20" textAlign="center">
-          Voici la collection "Useless (so far) Playing cards". Cette collection
-          est constituée de 9990 cartes à jouer dont 9720 (54x180) sont d'une
-          rareté commune et 270 (54x5) sont rare. La collection est également
-          consituée de boosters (1998) de 5 cartes pour la distribution.
+          Here is the "Useless (so far) Playing cards" collection. This
+          collection consists of 9990 playing cards of which 9720 (54x180) are
+          of common rarity and 270 (54x5) are rare. The collection is also made
+          up of booster packs (1998) of 5 cards for distribution.
         </Text>
 
         <Heading fontFamily="mono" mb="5">
-          Distribution :
+          Distribution:
         </Heading>
         {!distribution.cards.length ? (
           "Loading..."
         ) : (
           <>
-            <Text>Boosters : {distribution.remainingBooster} / 1998</Text>
+            <Text>Boosters: {distribution.remainingBooster} / 1998</Text>
 
             <Flex justifyContent="space-between" my="5" flexWrap="wrap" gap="5">
               {distribution.cards.map((card, index) => {
@@ -185,7 +185,7 @@ const ERC1155 = ({ contract, inventory }) => {
 
         {/* INVENTORY */}
         <Heading fontFamily="mono" mt="5">
-          Inventaire :
+          Inventory:
         </Heading>
         {/* CARDS */}
         <Flex
@@ -196,7 +196,7 @@ const ERC1155 = ({ contract, inventory }) => {
           gap="5"
         >
           <Heading fontFamily="mono" fontSize="2xl">
-            Cartes :
+            Cards:
           </Heading>
           {inventory.cards.map((card) => {
             return (
@@ -249,7 +249,7 @@ const ERC1155 = ({ contract, inventory }) => {
           gap="5"
         >
           <Heading fontFamily="mono" fontSize="2xl">
-            Boosters :
+            Boosters:
           </Heading>
           {inventory.boosters.amount.map((booster) => {
             return (
@@ -327,7 +327,7 @@ const ERC1155 = ({ contract, inventory }) => {
               gap="5"
             >
               <Heading fontFamily="mono" fontSize="2xl" mt="5">
-                A transférer :
+                To transfer:
               </Heading>
               {toTransfer.map((item, index) => {
                 return (
@@ -361,7 +361,7 @@ const ERC1155 = ({ contract, inventory }) => {
         ) : (
           <>
             <FormControl my="5">
-              <FormLabel>Adresse de réception :</FormLabel>
+              <FormLabel>Destination address:</FormLabel>
               <Input
                 onChange={(e) => setReceiver(e.target.value)}
                 bg="white"
@@ -380,7 +380,7 @@ const ERC1155 = ({ contract, inventory }) => {
               }
               isDisabled={receiver.length !== 42 || toTransfer.length === 0}
             >
-              Transférer
+              Transfer ({toTransfer.length} token)
             </ContractButton>
           </>
         )}
