@@ -17,7 +17,7 @@ const Header = () => {
         <Box ps="5" display="flex">
           <Flex justifyContent="space-between" flexDirection="column">
             <Box>
-              <Heading fontSize="6xl" as="h1" my="5">
+              <Heading fontFamily="title" fontSize="6xl" as="h1" my="5">
                 Raphaël Pellet
               </Heading>
               <Text as="i">

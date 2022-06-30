@@ -1,8 +1,9 @@
-import { Flex, Heading } from "@chakra-ui/react"
+import { Flex, Heading, Link, Text } from "@chakra-ui/react"
 
 import { useEVM } from "react-ethers"
+import NetworkSwitch from "./NetworkSwitch"
 
-const Dashboard = ({ balance, token }) => {
+const Dashboard = () => {
   const { network, account } = useEVM()
 
   return (
@@ -13,16 +14,20 @@ const Dashboard = ({ balance, token }) => {
         flexDirection="column"
         p="10"
       >
-        <Heading my="10" textAlign="center">
-          Vous êtes connecté sur {network.name}
+        <Heading fontSize="6xl" fontFamily="console" mb="5" textAlign="center">
+          Dashboard
         </Heading>
-        <Heading mt="10" textAlign="center">
-          Avec le compte :
-        </Heading>
-        <Heading my="10" textAlign="center">
-          {account.address}
-        </Heading>
+        <Text mb="4" fontSize="2xl" fontFamily="mono">
+          {network.name}
+        </Text>
+        <Text mb="6" fontSize="2xl" fontFamily="mono">
+          Account:{" "}
+          <Link href={`${network.explorerUrl + account.address}`} isExternal>
+            {account.address}
+          </Link>
+        </Text>
       </Flex>
+      <NetworkSwitch />
     </>
   )
 }

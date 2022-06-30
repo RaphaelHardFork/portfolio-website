@@ -11,7 +11,24 @@ import { styles } from "./theme/index"
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider theme={extendTheme(styles)}>
-      <EVMContext>
+      <EVMContext
+        customNetworks={[
+          {
+            name: "Aurora Mainnet",
+            chainId: 1313161554,
+            blockHeight: 0,
+            publicEndpoints: ["https://mainnet.aurora.dev"],
+            explorerUrl: "https://aurorascan.dev/",
+          },
+          {
+            name: "Aurora Testnet",
+            chainId: 1313161555,
+            blockHeight: 0,
+            publicEndpoints: ["https://testnet.aurora.dev"],
+            explorerUrl: "https://testnet.aurorascan.dev/",
+          },
+        ]}
+      >
         <Router>
           <App />
         </Router>

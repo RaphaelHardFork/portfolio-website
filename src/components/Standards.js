@@ -47,7 +47,7 @@ const Standards = () => {
   const { lang } = useLang()
   return (
     <>
-      <Heading as="h1">
+      <Heading fontFamily="title" as="h1">
         {lang === "fr" ? "Standards utilisés :" : "Standards used:"}
       </Heading>
 
@@ -67,14 +67,14 @@ const Standards = () => {
               _hover={{ bg: "#FF7F50" }}
             >
               <Image m="auto" src={erc.img} />
-              <Text mt="auto" as="b">
+              <Text fontSize="md" fontFamily="monospace" mt="auto" as="b">
                 {erc.title}
               </Text>
             </Box>
           )
         })}
       </Flex>
-      <Button colorScheme="corail">
+      <Button size="lg" fontFamily="monospace" colorScheme="corail">
         <Link as={RouterLink} to="console">
           {lang === "fr" ? "Essayer la console" : "Try the console"}
         </Link>

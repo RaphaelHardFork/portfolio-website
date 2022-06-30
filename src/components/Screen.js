@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from "@chakra-ui/react"
-import { useEVM, useContract } from "react-ethers"
+import { useEVM } from "react-ethers"
 import { Route, Routes } from "react-router-dom"
 import { useERC20 } from "../hooks/useERC20"
 
@@ -8,16 +8,17 @@ import Dashboard from "./Dashboard"
 import ERC20 from "./ERC20"
 import ERC721 from "./ERC721"
 import Shop from "./Shop"
-import contracts from "../contexts/contracts.json"
 import { useERC1155 } from "../hooks/useERC1155"
+import contracts from "../contexts/contracts.json"
+import { selectContract } from "../pages/Console"
+import ERC1155 from "./ERC1155"
+import NetworkSwitch from "./NetworkSwitch"
 
 const Screen = () => {
-  const { ropsten } = contracts
-  const shop = useContract(ropsten.Shop.address, ropsten.Shop.abi)
-  const { network, connectionType, account } = useEVM()
+  const { network, connectionType, account, haveWebExtension } = useEVM()
   const { token, userColor } = useERC721()
   const { token: erc20, userInfo } = useERC20()
-  const { cards } = useERC1155()
+  const { cards, inventory } = useERC1155()
 
   return (
     <Box
@@ -29,72 +30,114 @@ const Screen = () => {
       }
       width="75%"
       bg={connectionType === "not initialized" ? "black" : "gray.100"}
-      zIndex={connectionType === "not initialized" ? 100000 : 1}
+      zIndex={connectionType === "not initialized" ? 5 : 1}
       transition="1s"
     >
-      {connectionType === "not initialized" || !account.isLogged ? (
-        connectionType === "not initialized" ? (
+      {connectionType === "not initialized" ? (
+        haveWebExtension ? (
+          <Heading
+            fontFamily="mono"
+            my="10"
+            textAlign="center"
+            color="gray.100"
+          >
+            Start the console!
+          </Heading>
+        ) : (
           <>
-            <Heading my="10" textAlign="center" color="gray.100">
-              Installez une extensions web pour injecter le web3
+            {/* NO EXTENSION / NOT LAUNCHED */}
+            <Heading
+              fontFamily="mono"
+              my="10"
+              textAlign="center"
+              color="gray.100"
+            >
+              Install a web extension to inject the web3
             </Heading>
             <Text textAlign="center" color="gray.100">
-              Comme Metamask, Brave (intégré au navigateur), XDEFI
+              Like Metamask, Brave (in-browser), XDEFI
             </Text>
           </>
-        ) : (
-          <Heading mt="10" textAlign="center">
-            Connectez-vous à la dApp pour continuer
-          </Heading>
         )
       ) : (
         <>
-          <Routes>
-            <Route
-              path="dashboard"
-              element={<Dashboard balance={userInfo.balance} token={erc20} />}
-            />
-            <Route
-              path="erc20"
-              element={
-                erc20 ? (
-                  <ERC20 balance={userInfo.balance} token={erc20} />
-                ) : (
-                  "Waiting for ERC20 contract"
-                )
-              }
-            />
-            <Route
-              path="shop"
-              element={
-                shop ? (
-                  <Shop
-                    shop={shop}
-                    userColor={userColor}
-                    erc20={erc20}
-                    erc20Info={userInfo}
-                    cards={cards}
-                  />
-                ) : (
-                  ""
-                )
-              }
-            />
-            <Route
-              path="erc721"
-              element={<ERC721 contract={token} userInfo={userColor} />}
-            />
-          </Routes>
-          <Text
-            bottom="5rem"
-            right="1rem"
-            position="absolute"
-            ms="auto"
-            mt="auto"
-            fontWeight="bold"
-          >
-            {network.blockHeight}
-          </Text>
+          {network.name !== "Ethereum Rinkeby testnet" &&
+          network.name !== "Ethereum Ropsten testnet" ? (
+            <>
+              <Heading fontFamily="mono" my="10" textAlign="center">
+                You are connected on {network.name}
+              </Heading>
+              <Heading fontFamily="mono" mt="10" textAlign="center">
+                Change the network to continue
+              </Heading>
+              <NetworkSwitch />
+            </>
+          ) : !account.isLogged ? (
+            <>
+              <Heading fontFamily="mono" my="10" textAlign="center">
+                You are connected on {network.name}
+              </Heading>
+              <Heading fontFamily="mono" mt="10" textAlign="center">
+                Log into the dApp to continue (there is no "read-only" mode)
+              </Heading>
+            </>
+          ) : (
+            <>
+              {" "}
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route
+                  path="erc20"
+                  element={
+                    erc20 ? (
+                      <ERC20 balance={userInfo.balance} token={erc20} />
+                    ) : (
+                      "Waiting for ERC20 contract"
+                    )
+                  }
+                />
+                <Route
+                  path="shop"
+                  element={
+                    network.chainId ? (
+                      <Shop
+                        contract={selectContract(
+                          contracts,
+                          network.chainId,
+                          "Shop"
+                        )}
+                        erc20={erc20}
+                        erc20Info={userInfo}
+                        userColor={userColor}
+                        cards={cards}
+                        inventory={inventory}
+                      />
+                    ) : (
+                      ""
+                    )
+                  }
+                />
+                <Route
+                  path="erc721"
+                  element={<ERC721 contract={token} userInfo={userColor} />}
+                />
+                <Route
+                  path="erc1155"
+                  element={<ERC1155 contract={cards} inventory={inventory} />}
+                />
+              </Routes>
+              <Text
+                bottom="1rem"
+                right="1rem"
+                position="absolute"
+                ms="auto"
+                mt="auto"
+                fontWeight="bold"
+              >
+                {network.blockHeight}
+              </Text>
+            </>
+          )}
         </>
       )}
     </Box>

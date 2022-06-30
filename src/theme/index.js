@@ -50,7 +50,7 @@ export const styles = {
     },
   },
   fonts: {
-    text: "Lato, sans-serif",
-    title: "Merriweather, serif",
+    title: "Fascinate, cursive",
+    console: "VT323, monospace",
   },
 }

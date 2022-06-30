@@ -12,7 +12,13 @@ const Vision = () => {
   const { lang } = useLang()
   return (
     <>
-      <Heading mt="10rem" color="#FF7F50" as="h1">
+      <Heading
+        fontFamily="title"
+        fontSize="7xl"
+        mt="10rem"
+        color="#FF7F50"
+        as="h1"
+      >
         {lang === "fr" ? "Ma vision" : "My vision"}
       </Heading>
       <Divider
@@ -39,7 +45,7 @@ const Vision = () => {
       </Box>
 
       {/* CIRCULAR ECONOMY */}
-      <Heading as="h2" mt="6">
+      <Heading fontFamily="title" as="h2" mt="6">
         {lang === "fr" ? "L’économie circulaire" : "Circular economy"}
       </Heading>
       {lang === "fr" ? (
@@ -166,7 +172,7 @@ const Vision = () => {
       )}
 
       {/* KNOWLEDGE */}
-      <Heading as="h2" mt="6">
+      <Heading fontFamily="title" as="h2" mt="6">
         {lang === "fr" ? "La connaissance" : "Knowledge"}
       </Heading>
       {lang === "fr" ? (
@@ -282,7 +288,7 @@ const Vision = () => {
       )}
 
       {/* LIBERTY */}
-      <Heading as="h2" mt="6">
+      <Heading fontFamily="title" as="h2" mt="6">
         {lang === "fr" ? "La liberté" : "Liberty"}
       </Heading>
       {lang === "fr" ? (

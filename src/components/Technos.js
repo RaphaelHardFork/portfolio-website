@@ -26,7 +26,7 @@ const Technos = () => {
   const { lang } = useLang()
   return (
     <>
-      <Heading as="h1">
+      <Heading fontFamily="title" as="h1">
         {lang === "fr" ? "Technologies maitrisées :" : "Mastered technologies:"}
       </Heading>
       <Flex justifyContent="space-between" my="5" flexWrap="wrap" gap="5">
@@ -45,7 +45,13 @@ const Technos = () => {
               _hover={{ bg: "#FF7F50" }}
             >
               <Image m="auto" src={tech.img} />
-              <Text mt="auto" as="b">
+              <Text
+                fontSize="md"
+                fontFamily="monospace"
+                textAlign="center"
+                mt="auto"
+                as="b"
+              >
                 {tech.description}
               </Text>
             </Box>

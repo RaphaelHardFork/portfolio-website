@@ -24,7 +24,13 @@ const Background = () => {
 
   return (
     <>
-      <Heading color="#FF7F50" mt="10rem" as="h1">
+      <Heading
+        fontSize="7xl"
+        fontFamily="title"
+        color="#FF7F50"
+        mt="10rem"
+        as="h1"
+      >
         {lang === "fr" ? "Mon parcours" : "My background"}
       </Heading>
       <Divider
@@ -36,7 +42,7 @@ const Background = () => {
       />
 
       {/* IDEASOFT */}
-      <Heading mt="6" as="h2">
+      <Heading fontFamily="title" mt="6" as="h2">
         {lang === "fr"
           ? "Développeur Solidity chez "
           : "Solidity developer at "}
@@ -88,7 +94,7 @@ const Background = () => {
       </Box>
 
       {/* ALYRA */}
-      <Heading mt="6" as="h2">
+      <Heading fontFamily="title" mt="6" as="h2">
         {lang === "fr" ? "Apprenant à l’école " : "Student at "}
         {link.alyra}
       </Heading>
@@ -197,7 +203,7 @@ const Background = () => {
       {/* DOCTORAT */}
       {lang === "fr" ? (
         <>
-          <Heading mt="6" as="h2">
+          <Heading fontFamily="title" mt="6" as="h2">
             Doctorant à l'
             <Link
               _hover={{ color: "#FF7F50" }}
@@ -222,7 +228,7 @@ const Background = () => {
             d’identifier les molécules à l’origine d’un retard de prise du
             ciment une fois mélangé aux copeaux de chanvre.
           </Text>
-          <Heading mt="6" as="h2">
+          <Heading fontFamily="title" mt="6" as="h2">
             Licence et Master à l’
             <Link
               _hover={{ color: "#FF7F50" }}

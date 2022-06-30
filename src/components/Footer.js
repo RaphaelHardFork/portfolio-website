@@ -22,8 +22,9 @@ import { useLang } from "../hooks/useLang"
 const Footer = () => {
   const { lang } = useLang()
   const { hasCopied, onCopy } = useClipboard("raphael.pellet@protonmail.com")
+
   return (
-    <Flex mt="auto" bg="blackAlpha.800">
+    <Flex minW="100%" mt="auto" zIndex={10} bg="blackAlpha.800">
       <Container
         d="flex"
         justifyContent="space-between"
