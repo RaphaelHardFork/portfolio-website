@@ -15,7 +15,7 @@ import ERC1155 from "./ERC1155"
 import NetworkSwitch from "./NetworkSwitch"
 
 const Screen = () => {
-  const { network, connectionType, account } = useEVM()
+  const { network, connectionType, account, haveWebExtension } = useEVM()
   const { token, userColor } = useERC721()
   const { token: erc20, userInfo } = useERC20()
   const { cards, inventory } = useERC1155()
@@ -34,20 +34,31 @@ const Screen = () => {
       transition="1s"
     >
       {connectionType === "not initialized" ? (
-        <>
-          {/* NO EXTENSION / NOT LAUNCHED */}
+        haveWebExtension ? (
           <Heading
             fontFamily="mono"
             my="10"
             textAlign="center"
             color="gray.100"
           >
-            Install a web extension to inject the web3
+            Start the console!
           </Heading>
-          <Text textAlign="center" color="gray.100">
-            Like Metamask, Brave (in-browser), XDEFI
-          </Text>
-        </>
+        ) : (
+          <>
+            {/* NO EXTENSION / NOT LAUNCHED */}
+            <Heading
+              fontFamily="mono"
+              my="10"
+              textAlign="center"
+              color="gray.100"
+            >
+              Install a web extension to inject the web3
+            </Heading>
+            <Text textAlign="center" color="gray.100">
+              Like Metamask, Brave (in-browser), XDEFI
+            </Text>
+          </>
+        )
       ) : (
         <>
           {network.name !== "Ethereum Rinkeby testnet" &&

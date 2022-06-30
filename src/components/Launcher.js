@@ -28,7 +28,8 @@ function networkName(name) {
 }
 
 const Launcher = () => {
-  const { methods, account, connectionType, network } = useEVM()
+  const { methods, account, connectionType, network, haveWebExtension } =
+    useEVM()
   const { userColor } = useERC721()
   const { userInfo } = useERC20()
   const { surname } = useUserName()
@@ -43,7 +44,8 @@ const Launcher = () => {
         {connectionType === "not initialized" ? (
           <Button
             size="lg"
-            colorScheme="duck"
+            colorScheme={haveWebExtension ? "duck" : "corail"}
+            disabled={!haveWebExtension}
             onClick={() => methods.launchConnection("injected")}
             leftIcon={<FaPowerOff />}
           >

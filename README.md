@@ -2,13 +2,12 @@
 
 Go to the website: https://ethereum-portfolio.netlify.app/
 
-## WIP Console
+## Next steps
 
-To merge once `react-ethers` docs is release
-
-## To Do
-
-- contracts => diamond-like pattern in case of error
-  => reset ownership after
-- dashboard to `/console`
-- font & icon
+- deploy contract on Polygon and AUrora
+- change contracts to a more modular architecture (UUPS, Diamond pattern)
+- new contract
+  - clone proxies
+  - meta-tx
+  - unique name
+  - colors fusions with tokenID as metadata, multiple mint (ERC721A)
